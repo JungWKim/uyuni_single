@@ -21,7 +21,7 @@ sudo apt update
 ssh-keygen
 ssh-copy-id -i ~/.ssh/id_rsa.pub ${USER}@${IP}
 
-# install deepops
+# install deepops. Reboot will be executed automatically. Then run ubuntu2204_2.sh.
 git clone https://github.com/NVIDIA/deepops.git
 cd deepops
 ./scripts/setup.sh
