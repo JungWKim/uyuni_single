@@ -2,11 +2,11 @@
 
 IP=
 
-cd ~
-
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
+cd ~/deepops
 ansible-playbook -l k8s-cluster playbooks/k8s-cluster.yml
 sudo chmod go-r ~/.kube/config
+cd ~
 
 #--- enable kubectl command autocompletion
 echo "source <(kubectl completion bash)" | sudo tee -a ~/.bashrc
@@ -31,8 +31,8 @@ sleep 20
 sed -i "26s/false/true/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "s/count: 3/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "s/count: 2/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "436s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "503s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 
 #--- install rook ceph cluster
 cd ~/rook/deploy/charts/rook-ceph-cluster
