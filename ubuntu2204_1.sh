@@ -24,7 +24,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub ${USER}@${IP}
 
 # install deepops. Reboot will be executed automatically. Then run ubuntu2204_2.sh.
 git clone https://github.com/NVIDIA/deepops.git
-sh ./deepops/scripts/setup.sh
+bash ./deepops/scripts/setup.sh
 source /opt/deepops/env/bin/activate
 sed -i "s/#mgmt01     ansible_host=10.0.0.1/mgmt01      ansible_host=${IP}/g" ~/deepops/config/inventory
 sed -i "s/#mgmt01/mgmt01/g" ~/deepops/config/inventory
