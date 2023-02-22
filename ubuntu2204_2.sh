@@ -4,7 +4,11 @@ NFS=no
 IP_ADDRESS=
 # LB_IP_POOL example : 192.168.0.110-192.168.0.120
 LB_IP_POOL=
+# you can set DOMAIN as blank
 DOMAIN=
+# if you use nfs-client, set PV_SIZE as 60% of the OS disk.
+# if you use ceph-filesystem, set PV_SIZE as 90% of the data disk.
+PV_SIZE=
 
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
 cd ~/deepops
@@ -88,6 +92,8 @@ if [ ${NFS} == 'yes' ] ; then
 
 	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 
+	sed -i "s/100/${PV_SIZE}/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pvc.yaml
+
 #--- option 2. use ceph-filesystem as default storage class
 else
 	# make ceph-filesystem storageclass as default storageclass
@@ -97,6 +103,9 @@ else
 	kubectl patch storageclass ceph-filesystem -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
 	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-cephfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
+
+	sed -i "s/100/${PV_SIZE}/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pvc-cephfs.yaml
+
 fi
 
 #--- install prerequisite applications for uyuni deployment
