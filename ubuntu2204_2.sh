@@ -44,6 +44,7 @@ sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 cd ~/rook/deploy/charts/rook-ceph-cluster
 helm install -n rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster -f values.yaml
 cd ~
+sleep 60
 
 #--- if you want to check if rook ceph cluster is installed completely, run the below commands.
 # kubectl get all -n rook-ceph
