@@ -1,7 +1,5 @@
 #!/bin/bash
 
-IP=
-
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
 cd ~/deepops
 ansible-playbook -l k8s-cluster playbooks/k8s-cluster.yml
