@@ -12,6 +12,7 @@ helm repo add rook-release https://charts.rook.io/release
 helm search repo rook-ceph
 kubectl create namespace rook-ceph
 helm install --namespace rook-ceph rook-ceph rook-release/rook-ceph
+sleep 20
 
 #--- if you want to check if rook operator is installed completely, run the below commands.
 # kubectl get all -n rook-ceph
