@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NFS=no
+
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
 cd ~/deepops
 ansible-playbook -l k8s-cluster playbooks/k8s-cluster.yml
@@ -67,18 +69,29 @@ rm LICENSE && rm README.md
 #--- configure and edit uyuni installation files
 ./uyuni_2302_ip_config.sh
 
-#--- make ceph-filesystem storageclass as default storageclass
-kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-kubectl patch storageclass ceph-block -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-kubectl patch storageclass ceph-bucket -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-kubectl patch storageclass ceph-filesystem -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+#--- option 1. use nfs-client as default storage class
+if [ ${NFS} == 'yes' ] ; then
+	sudo mkdir /export/deepops_nfs/uyuni-data
+	sudo chmod 777 /export/deepops_nfs/uyuni-data
+
+	mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
+
+#--- option 2. use ceph-filesystem as default storage class
+else
+	# make ceph-filesystem storageclass as default storageclass
+	kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+	kubectl patch storageclass ceph-block -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+	kubectl patch storageclass ceph-bucket -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+	kubectl patch storageclass ceph-filesystem -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+	mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-cephfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
+fi
 
 #--- install prerequisite applications for uyuni deployment
 cd ~/Uyuni_Deploy_2302
 helmfile --environment itmaya -l type=base sync
 
 #--- install uyuni kustomize
-mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-cephfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 sudo snap install kustomize
 kubectl create namespace uyuni-suite
 kustomize build ~/Uyuni_Kustomize_2302_2/overlays/itmaya | kubectl apply -f -
