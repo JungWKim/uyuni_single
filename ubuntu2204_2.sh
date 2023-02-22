@@ -74,7 +74,7 @@ if [ ${NFS} == 'yes' ] ; then
 	sudo mkdir /export/deepops_nfs/uyuni-data
 	sudo chmod 777 /export/deepops_nfs/uyuni-data
 
-	mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
+	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 
 #--- option 2. use ceph-filesystem as default storage class
 else
@@ -84,7 +84,7 @@ else
 	kubectl patch storageclass ceph-bucket -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 	kubectl patch storageclass ceph-filesystem -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
-	mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-cephfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
+	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-cephfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 fi
 
 #--- install prerequisite applications for uyuni deployment
