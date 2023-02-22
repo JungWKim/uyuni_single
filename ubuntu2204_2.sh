@@ -30,6 +30,7 @@ sed -i "26s/false/true/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "s/count: 3/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "s/count: 2/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+sed -i "492s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 
