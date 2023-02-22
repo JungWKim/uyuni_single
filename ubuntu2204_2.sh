@@ -1,6 +1,10 @@
 #!/bin/bash
 
 NFS=no
+IP_ADDRESS=
+# LB_IP_POOL example : 192.168.0.110-192.168.0.120
+LB_IP_POOL=
+DOMAIN=
 
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
 cd ~/deepops
@@ -57,9 +61,6 @@ unzip Uyuni_Kustomize_2302_2.zip
 rm Uyuni_Kustomize_2302_2.zip
 mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/dockerconfigjson ~/Uyuni_Kustomize_2302_2/overlays/itmaya/.dockerconfigjson
 
-wget --no-check-certificate --content-disposition http://cloud.itmaya.co.kr/s/opsOLB7mbQxAuWJ/download
-chmod 777 uyuni_2302_ip_config.sh
-
 #--- install helmfile
 wget https://github.com/helmfile/helmfile/releases/download/v0.150.0/helmfile_0.150.0_linux_amd64.tar.gz
 tar -zxvf helmfile_0.150.0_linux_amd64.tar.gz
@@ -67,7 +68,17 @@ sudo mv helmfile /usr/bin/
 rm LICENSE && rm README.md
 
 #--- configure and edit uyuni installation files
-./uyuni_2302_ip_config.sh
+sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+sed -i "s/192.168.0.75-192.168.0.84/$LB_IP_POOL/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/ingress-patch.yaml
+sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/base/services/ingress.yaml
+sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pv.yaml
 
 #--- option 1. use nfs-client as default storage class
 if [ ${NFS} == 'yes' ] ; then

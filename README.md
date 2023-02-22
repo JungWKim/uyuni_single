@@ -12,5 +12,5 @@
 ### edit variables at the head of the first script
 ### Run the first script without "sudo"
 ### After the first script is finished, edit the value of the storage size in pv.yaml before you run the second script
-### edit the value of NFS variable at the head of the second script if you need to use nfs-client storage class
+### edit the value of variables at the head of the second script(If you need to use nfs-client storage class, change the value of 'NFS' from 'no' to 'yes' only)
 ### Run the second script without "sudo"
