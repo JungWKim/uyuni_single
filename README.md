@@ -8,6 +8,9 @@
 ### 7. cni type : calico
 
 # How to use
-### fix the ip 
-### edit variables at the head of each script
-### you must run scripts without "sudo"
+### fix the host's ip
+### edit variables at the head of the first script
+### Run the first script without "sudo"
+### After the first script is finished, edit the value of the storage size in pv.yaml before you run the second script
+### edit the value of NFS variable at the head of the second script if you need to use nfs-client storage class
+### Run the second script without "sudo"
