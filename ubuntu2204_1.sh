@@ -1,7 +1,6 @@
 #!/bin/bash
 
 USER=
-USER_HOME=/home/${USER}
 IP=
 
 # prevent auto upgrade
