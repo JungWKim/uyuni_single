@@ -23,39 +23,6 @@ echo "source <(kubeadm completion bash)" | sudo tee -a ~/.bashrc
 echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc
 echo "source <(kubeadm completion bash)" | sudo tee -a /root/.bashrc
 
-#--- install rook operator
-git clone https://github.com/rook/rook.git
-helm repo add rook-release https://charts.rook.io/release
-helm search repo rook-ceph
-kubectl create namespace rook-ceph
-helm install --namespace rook-ceph rook-ceph rook-release/rook-ceph
-sleep 60
-
-#--- if you want to check if rook operator is installed completely, run the below commands.
-# kubectl get all -n rook-ceph
-# kubectl -n rook-ceph get pods -l "app=rook-ceph-operator"
-
-#--- change important values of rook ceph cluster
-sed -i "26s/false/true/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "s/count: 3/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "s/count: 2/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "492s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-
-#--- install rook ceph cluster
-cd ~/rook/deploy/charts/rook-ceph-cluster
-helm install -n rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster -f values.yaml
-cd ~
-sleep 120
-
-#--- if you want to check if rook ceph cluster is installed completely, run the below commands.
-# kubectl get all -n rook-ceph
-# kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- bash
-# ceph -s
-# ceph osd status
-
 #--- download files for uyuni deployment
 wget --no-check-certificate --content-disposition http://cloud.itmaya.co.kr/s/h1slG9NqKCA6NHS/download
 unzip Uyuni_Deploy_2302.zip
@@ -96,6 +63,40 @@ if [ ${NFS} == 'yes' ] ; then
 
 #--- option 2. use ceph-filesystem as default storage class
 else
+	
+	#--- install rook operator
+	git clone https://github.com/rook/rook.git
+	helm repo add rook-release https://charts.rook.io/release
+	helm search repo rook-ceph
+	kubectl create namespace rook-ceph
+	helm install --namespace rook-ceph rook-ceph rook-release/rook-ceph
+	sleep 60
+
+	#--- if you want to check if rook operator is installed completely, run the below commands.
+	# kubectl get all -n rook-ceph
+	# kubectl -n rook-ceph get pods -l "app=rook-ceph-operator"
+
+	#--- change important values of rook ceph cluster
+	sed -i "26s/false/true/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "s/count: 3/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "s/count: 2/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "492s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+
+	#--- install rook ceph cluster
+	cd ~/rook/deploy/charts/rook-ceph-cluster
+	helm install -n rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster -f values.yaml
+	cd ~
+	sleep 120
+
+	#--- if you want to check if rook ceph cluster is installed completely, run the below commands.
+	# kubectl get all -n rook-ceph
+	# kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- bash
+	# ceph -s
+	# ceph osd status
+
 	# make ceph-filesystem storageclass as default storageclass
 	kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 	kubectl patch storageclass ceph-block -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
