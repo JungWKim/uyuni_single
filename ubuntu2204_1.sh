@@ -3,6 +3,8 @@
 USER=
 IP=
 
+cd ~
+
 # prevent auto upgrade
 sudo sed -i 's/1/0/g' /etc/apt/apt.conf.d/20auto-upgrades
 
@@ -22,10 +24,9 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub ${USER}@${IP}
 
 # install deepops. Reboot will be executed automatically. Then run ubuntu2204_2.sh.
 git clone https://github.com/NVIDIA/deepops.git
-cd deepops
-./scripts/setup.sh
+./deepops/scripts/setup.sh
 source /opt/deepops/env/bin/activate
-sed -i "s/#mgmt01     ansible_host=10.0.0.1/mgmt01      ansible_host=${IP}/g" config/inventory
-sed -i "s/#mgmt01/mgmt01/g" config/inventory
-sed -i -r -e "/[kube-node]/a\mgmt01" config/inventory
-ansible-playbook -l k8s-cluster playbooks/k8s-cluster.yml
+sed -i "s/#mgmt01     ansible_host=10.0.0.1/mgmt01      ansible_host=${IP}/g" ~/deepops/config/inventory
+sed -i "s/#mgmt01/mgmt01/g" ~/deepops/config/inventory
+sed -i -r -e "/\[kube-node\]/a\\mgmt01" ~/deepops/config/inventory
+ansible-playbook -l k8s-cluster ~/deepops/playbooks/k8s-cluster.yml
