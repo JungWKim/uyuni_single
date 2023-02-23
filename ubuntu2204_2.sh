@@ -62,6 +62,7 @@ if [ ${NFS} == 'yes' ] ; then
 	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 
 	sed -i "s/100/${PV_SIZE}/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pvc.yaml
+	sed -i "s/100/${PV_SIZE}/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pv.yaml
 
 #--- option 2. use ceph-filesystem as default storage class
 else
