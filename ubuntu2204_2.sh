@@ -39,6 +39,8 @@ tar -zxvf helmfile_0.150.0_linux_amd64.tar.gz
 sudo mv helmfile /usr/bin/
 rm LICENSE && rm README.md
 
+cp ~/.kube/config ~/Uyuni_Kustomize_2302_2/overlays/itmaya/config
+
 #--- configure and edit uyuni installation files
 sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
 sed -i "s/192.168.0.75-192.168.0.84/$LB_IP_POOL/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
