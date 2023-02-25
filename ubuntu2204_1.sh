@@ -8,7 +8,7 @@ cd ~
 # prevent auto upgrade
 sudo sed -i 's/1/0/g' /etc/apt/apt.conf.d/20auto-upgrades
 
-# change hostname to 'mgmt01'
+# change hostname to 'mgmt01'. If you want to keep your hostname, comment the below command and change all the "mgmt01" to current hostname in '~/deepops/config/inventory'
 sudo hostnamectl set-hostname mgmt01
 
 # install basic packages
