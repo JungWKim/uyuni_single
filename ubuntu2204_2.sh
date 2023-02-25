@@ -155,4 +155,4 @@ kubectl create namespace uyuni-suite
 kustomize build ~/Uyuni_Kustomize_2302_2/overlays/itmaya | kubectl apply -f -
 
 #--- if "no destination available" error occurs, enter the below command
-sysctl -w net.ipv4.conf.all.proxy_arp=1
+sudo sysctl -w net.ipv4.conf.all.proxy_arp=1
