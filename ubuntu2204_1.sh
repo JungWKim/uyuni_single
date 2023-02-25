@@ -30,4 +30,5 @@ source /opt/deepops/env/bin/activate
 sed -i "s/#mgmt01     ansible_host=10.0.0.1/mgmt01      ansible_host=${IP}/g" ~/deepops/config/inventory
 sed -i "s/#mgmt01/mgmt01/g" ~/deepops/config/inventory
 sed -i -r -e "/\[kube-node\]/a\\mgmt01" ~/deepops/config/inventory
-ansible-playbook -l k8s-cluster ~/deepops/playbooks/k8s-cluster.yml
+ansible-playbook -l k8s-cluster playbooks/k8s-cluster.yml
+cd ~
