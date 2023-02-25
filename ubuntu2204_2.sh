@@ -47,8 +47,6 @@ sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 sed -i "492s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 #--- reduce cephFilesystem data pool size from 3 to 2
 sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
-#--- change reclaimPolicy of all storageclass from Delete to Retain
-sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 
 #--- install rook ceph cluster
 cd ~/rook/deploy/charts/rook-ceph-cluster
@@ -77,7 +75,7 @@ mv ~/Uyuni_Kustomize_2302_2/overlays/itmaya/dockerconfigjson ~/Uyuni_Kustomize_2
 wget https://github.com/helmfile/helmfile/releases/download/v0.150.0/helmfile_0.150.0_linux_amd64.tar.gz
 tar -zxvf helmfile_0.150.0_linux_amd64.tar.gz
 sudo mv helmfile /usr/bin/
-rm LICENSE && rm README.md
+rm LICENSE && rm README.md && rm helmfile_0.150.0_linux_amd64.tar.gz
 
 cp ~/.kube/config ~/Uyuni_Kustomize_2302_2/overlays/itmaya/config
 
