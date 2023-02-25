@@ -59,7 +59,7 @@ if [ ${NFS} == 'yes' ] ; then
 	sudo mkdir /export/deepops_nfs/uyuni-data
 	sudo chmod 777 /export/deepops_nfs/uyuni-data
 
-	sed -i "s/- uyuni-suite-pv.yaml/\#- uyuni-suite-pv.yaml/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml
+	sed -i "s/  - uyuni-suite-pv.yaml/\#  - uyuni-suite-pv.yaml/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml
 	cp ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization-nfs.yaml ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/kustomization.yaml
 
 	sed -i "s/100/${PV_SIZE}/g" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pvc.yaml
