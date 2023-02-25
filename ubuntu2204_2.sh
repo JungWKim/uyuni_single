@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NFS=no
+DNS=no
 IP_ADDRESS=
 # LB_IP_POOL example : 192.168.0.110-192.168.0.120
 LB_IP_POOL=
@@ -8,6 +8,7 @@ LB_IP_POOL=
 DOMAIN=
 # if you use nfs-client, set PV_SIZE as 60% of the OS disk.
 # if you use ceph-filesystem, set PV_SIZE as 90% of the data disk.
+NFS=no
 PV_SIZE=
 
 #--- install the rest of deepops process after reboot. This will install nfs-provisioner and gpu-operator
@@ -79,18 +80,37 @@ rm LICENSE && rm README.md && rm helmfile_0.150.0_linux_amd64.tar.gz
 
 cp ~/.kube/config ~/Uyuni_Kustomize_2302_2/overlays/itmaya/config
 
-#--- configure and edit uyuni installation files
-sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
-sed -i "s/192.168.0.75-192.168.0.84/$LB_IP_POOL/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
-sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/ingress-patch.yaml
-sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
-sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
-sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
-sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
-sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
-sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
-sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/base/services/ingress.yaml
-sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pv.yaml
+#--- access uyuni webpage through a domain name
+if [ ${DNS} == 'yes' ] ; then
+
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+	sed -i "s/192.168.0.75-192.168.0.84/$LB_IP_POOL/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/ingress-patch.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+	sed -i "s/default.com/${DOMAIN}/gi" ~/Uyuni_Kustomize_2302_2/base/services/ingress.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pv.yaml
+
+#--- access uyuni webpage through an ip address
+else
+
+	sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+	sed -i "s/192.168.0.75-192.168.0.84/$LB_IP_POOL/gi" ~/Uyuni_Deploy_2302/environments/itmaya/values.yaml
+	sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/ingress-patch.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+	sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/batch-deployment-env.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+	sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/core-deployment-env.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+	sed -i "s/default.com/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/frontend-deployment-env.yaml
+	sed -i "s/default.com/$DOMAIN/gi" ~/Uyuni_Kustomize_2302_2/base/services/ingress.yaml
+	sed -i "s/192.168.0.0/$IP_ADDRESS/gi" ~/Uyuni_Kustomize_2302_2/overlays/itmaya/volumes/uyuni-suite-pv.yaml
+
+fi
 
 #--- option 1. use nfs-client as default storage class
 if [ ${NFS} == 'yes' ] ; then
