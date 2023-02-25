@@ -23,11 +23,12 @@ echo "source <(kubeadm completion bash)" | sudo tee -a ~/.bashrc
 echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc
 echo "source <(kubeadm completion bash)" | sudo tee -a /root/.bashrc
 
-#--- download files for uyuni deployment
+#--- download uyuni-infra file
 wget --no-check-certificate --content-disposition http://cloud.itmaya.co.kr/s/h1slG9NqKCA6NHS/download
 unzip Uyuni_Deploy_2302.zip
 rm Uyuni_Deploy_2302.zip
 
+#--- download uyuni-suite file
 wget --no-check-certificate --content-disposition http://cloud.itmaya.co.kr/s/cCqZOkZJ1Cxyhzc/download
 unzip Uyuni_Kustomize_2302_2.zip
 rm Uyuni_Kustomize_2302_2.zip
@@ -80,13 +81,19 @@ else
 	# kubectl get all -n rook-ceph
 	# kubectl -n rook-ceph get pods -l "app=rook-ceph-operator"
 
-	#--- change important values of rook ceph cluster
+	#--- enable toolbox
 	sed -i "26s/false/true/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- reduce monitor daemon from 3 to 1
 	sed -i "s/count: 3/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- reduce manager daemon from 3 to 1
 	sed -i "s/count: 2/count: 1/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- reduce cephBlock datapoolsize from 3 to 2
 	sed -i "429s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- reduce cephFilesystem metadata pool size from 3 to 2
 	sed -i "492s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- reduce cephFilesystem data pool size from 3 to 2
 	sed -i "496s/3/2/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
+	#--- change reclaimPolicy of all storageclass from Delete to Retain
 	sed -i "s/ Delete/ Retain/g" ~/rook/deploy/charts/rook-ceph-cluster/values.yaml
 
 	#--- install rook ceph cluster
@@ -113,11 +120,11 @@ else
 
 fi
 
-#--- install prerequisite applications for uyuni deployment
+#--- deploy uyuni-infra
 cd ~/Uyuni_Deploy_2302
 helmfile --environment itmaya -l type=base sync
 
-#--- install uyuni kustomize
+#--- deploy uyuni-suite
 sudo snap install kustomize
 kubectl create namespace uyuni-suite
 kustomize build ~/Uyuni_Kustomize_2302_2/overlays/itmaya | kubectl apply -f -
